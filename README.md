@@ -1,5 +1,6 @@
 # kaggle-islr-challenge
-Attempt to solve kaggle's isolated language recognition challenge 
+Attempt to solve kaggle's isolated language recognition challenge (https://www.kaggle.com/competitions/asl-signs/overview).<br/>
+My Best score on private kaggle dataset came out to 0.741 while the top 1 had 0.892(respect).
 
 ## Prominents notebooks/approaches that were good enough on training,test dataset to be tested kaggle's hidden test dataset
 1. 030323_23_49 : 2 hands , x,y,z, remove na landmarks ,resize to 21 frames, conv1dlstm stacked 0.4187973
@@ -25,4 +26,15 @@ Attempt to solve kaggle's isolated language recognition challenge
 	- where Frames are variable and different for each sample
 	- This dimension is devoted to landmarks which are hands,face,pose. I mainly tried hands,lips from face,and pose
 	- last dimension belongs to coordinates which are x,y,z. Started with all 3 , dropped z later on
-- 
+
+## Challenges
+- Since this is a video dataset problem, dealing with variable frames was an issue. To make it more exciting, the fps was different. Making some samples extremely lengthy or small. I tried with fixed frame approach using resizing, truncation/padding, choosing max length in dataset and padded at first. Best worked for me was resize approach.
+- Overfitting, the always culprit as usual. After reaching 60-70 % test accuracy, the model starts to overfit and for architectures like transformers ,its very difficult to get rid of.
+- Augmentation, one way to tackle overfitting is ofcourse, but I couldn't think some intelligent ways to augment that didn't affect model training in a negative way. Tried hands swap augmentation.
+- Normalization, normalizing data before feeding to model is a general step. Mediapipe model gives coordinates such that the body is 0 centered , there is no hard range(-n to +n). Tried 0-1 normalization, also normalization using mean and unit variance learned using training dataset.
+- Tflite : My STGCN implementation performed the best as compared to all other approaches but I wasn't to submit to kaggle because it kept failing during submission. Not sure because of tflite conversion. STGCN approach has 10% better results as compared to second best approach.
+:(
+ 
+## References
+- Transformer starter notebook : https://www.kaggle.com/code/markwijkhuizen/gislr-tf-data-processing-transformer-training
+- Graph CNN starter notebook : https://www.kaggle.com/code/timxinxinpeng/isolated-sign-language-recognition-with-stgcn
